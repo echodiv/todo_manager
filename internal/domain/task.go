@@ -1,8 +1,9 @@
-package task
+package entity
 
+// Task represent todo task in domain scope.
 type Task struct {
-	Id          int
-	UserId      int
+	ID          int
+	UserID      int
 	IsComplete  bool
 	Title       string
 	Description string

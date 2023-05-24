@@ -4,8 +4,9 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/echodiv/todo/app/interactors"
 	"github.com/labstack/echo/v4"
+
+	"github.com/echodiv/todo_manager/internal/domain/usecase"
 )
 
 type CreateRequest struct {
@@ -28,16 +29,16 @@ type TaskResponse struct {
 }
 
 type Service interface {
-	Create(taskRequest interactors.TaskCreateRequest) interactors.Task
-	Complete(userId, Id int) (interactors.Task, error)
-	GetForUser(userId int) []interactors.Task
+	Create(taskRequest usecase.TaskCreateRequest) usecase.Task
+	Complete(userId, Id int) (usecase.Task, error)
+	GetForUser(userId int) []usecase.Task
 }
 
 type Task struct {
 	in Service
 }
 
-func NewTaskService(in interactors.TaskInteractor) Task {
+func NewTaskService(in usecase.TaskInteractor) Task {
 	return Task{
 		in: in,
 	}
@@ -81,15 +82,15 @@ func (t Task) GetAllTaskForUser(c echo.Context) error {
 	return c.JSON(http.StatusCreated, interactorsTasksToTaskResponses(todos))
 }
 
-func createRequestToInteractorsRequest(createRequest *CreateRequest) interactors.TaskCreateRequest {
-	return interactors.TaskCreateRequest{
+func createRequestToInteractorsRequest(createRequest *CreateRequest) usecase.TaskCreateRequest {
+	return usecase.TaskCreateRequest{
 		UserID:      createRequest.UserId,
 		Title:       createRequest.Title,
 		Description: createRequest.Description,
 	}
 }
 
-func interactorsTaskToTaskResponse(interactorsTask interactors.Task) TaskResponse {
+func interactorsTaskToTaskResponse(interactorsTask usecase.Task) TaskResponse {
 	return TaskResponse{
 		Id:          interactorsTask.Id,
 		UserId:      interactorsTask.UserId,
@@ -99,7 +100,7 @@ func interactorsTaskToTaskResponse(interactorsTask interactors.Task) TaskRespons
 	}
 }
 
-func interactorsTasksToTaskResponses(interactorsTasks []interactors.Task) []TaskResponse {
+func interactorsTasksToTaskResponses(interactorsTasks []usecase.Task) []TaskResponse {
 	var tasks []TaskResponse
 
 	for i := range interactorsTasks {

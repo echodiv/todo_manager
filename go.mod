@@ -1,4 +1,4 @@
-module github.com/echodiv/todo
+module github.com/echodiv/todo_manager
 
 go 1.18
 
